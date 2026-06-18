@@ -1,7 +1,6 @@
 ﻿# ModSettingsLib <br>
 **Requirements:** BepInEx <br>
-**Nexus Mods:** TBD <br>
-**Nexus Mods:** TBD 
+Also on [**Nexus Mods**](https://www.nexusmods.com/scavprototype/mods/333).
 
 --- 
 ## Description
@@ -13,7 +12,7 @@ ModSettingsLib is a small mod to help create and unify settings menus for other 
 ---
 ## Installation
 1. Ensure you have **BepInEx 5** installed for Casualties Unknown.
-2. Download [the latest release here.](https://github.com/Danimineiro/CU_ModSettings/releases/latest).
+2. Download [the latest release here](https://github.com/Danimineiro/CU_ModSettings/releases/latest).
 3. Extract the folder within the the zip file into the game directory under `BepInEx/plugins/`.
 4. Launch the game. Within the games settings menu, you should be able to find a new tab called "Mod Settings".
 
@@ -88,6 +87,8 @@ public static class HarmonyPatcher
 ```
 
 ### The games `Setting` classes
+Use `Settings.Get<T>(string name);` to retrieve your set values.
+
 - `name` is a translation key
 - `value` holds the saved or the default value
 - `apply` can be given a lambda, that runs immediately when the setting was changed in the settings menu
