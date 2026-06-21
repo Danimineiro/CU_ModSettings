@@ -1,12 +1,15 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using CU_ModSettings.HarmonyPatching;
+using CUCoreLib.Data;
+using CUCoreLib.Registries;
 using System.Diagnostics.CodeAnalysis;
+using UnityEngine;
 using static Setting;
 
 namespace CU_ModSettings;
 
-[BepInPlugin("me.danimineiro.modsettings", MOD_NAME, "1.0.0")]
+[BepInPlugin("me.danimineiro.modsettings", MOD_NAME, "1.0.1")]
 public class ModSettingsPlugin : BaseUnityPlugin
 {
     public const string MOD_NAME = "Mod Settings";

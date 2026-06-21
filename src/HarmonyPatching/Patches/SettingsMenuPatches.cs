@@ -31,6 +31,9 @@ internal class SettingsMenuPatches
             RectTransform rectTransform = spawnedSetting.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y - dropDownHeight);
         }
+
+        // Increase height of settings menu to fix scrolling issue
+        SettingsMenu.instance.content.sizeDelta += new Vector2(0f, dropDownHeight);
     }
 
     internal static void OpenMenuPatch()

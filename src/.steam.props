@@ -75,6 +75,11 @@
 		<ItemGroup Condition="Exists('$(BepInExCoreDir)')">
 			<Reference Include="$(BepInExCoreDir)/*.dll" Exclude="$(BepInExCoreDir)/0Harmony20.dll" Private="false" />
 		</ItemGroup>
+		
+		<!-- Add references for CUCoreLib DLLs -->
+		<ItemGroup Condition="Exists('$(BepInExPluginsDir)/CUCoreLib.dll')">
+			<Reference Include="$(BepInExPluginsDir)/CUCoreLib.dll" Private="false" />
+		</ItemGroup>
 
         <!-- These items are output for debugging purposes -->
         <CreateItem
