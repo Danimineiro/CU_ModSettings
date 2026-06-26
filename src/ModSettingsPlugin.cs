@@ -27,7 +27,7 @@ public class ModSettingsPlugin : BaseUnityPlugin
 
     [AllowNull] internal static ManualLogSource LogSource { get; private set; }
 
-    public static Version? NewVersion { get; set; }
+    public static Version? NewVersion { get; set; } //= new(1, 1, 1, 1);
     public static bool NewVersionAvailable => Assembly.GetExecutingAssembly().GetName().Version < (NewVersion ?? new Version(0, 0, 0, 0));
 
     public void Awake()

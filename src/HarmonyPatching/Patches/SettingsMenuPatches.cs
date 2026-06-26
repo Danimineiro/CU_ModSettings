@@ -86,7 +86,7 @@ internal class SettingsMenuPatches
         if (ModSettingsPlugin.GetModIndexByHash(index) is not 0) return;
 
         string content = GetVersionText();
-        GameObject label = UIHelper.CreateLabel(SettingsMenu.instance.content, content, dropDownHeight);
+        GameObject label = UIHelper.CreateLabel(SettingsMenu.instance.content, content, dropDownHeight, 0f);
 
         SpawnedObjects.Add(label);
     }
