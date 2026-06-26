@@ -18,6 +18,6 @@ public static class HarmonyPatcher
 
         harmony.Patch(Method(typeof(Settings), nameof(Settings.DefaultSettings)), postfix: new(typeof(SettingsPatches), nameof(SettingsPatches.DefaultSettingsPatch)));
 
-        harmony.Patch(Method(typeof(Locale), nameof(Locale.LoadLanguage)), postfix: new(typeof(LocalePatches), nameof(LocalePatches.LoadLanguagePatch)));
+        harmony.Patch(Method(typeof(Locale), nameof(Locale.LoadLanguage)), postfix: new(typeof(ModSettingsLocale), nameof(ModSettingsLocale.LoadLanguagePatch)));
     }
 }

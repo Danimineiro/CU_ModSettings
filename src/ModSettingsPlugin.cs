@@ -20,14 +20,14 @@ public class ModSettingsPlugin : BaseUnityPlugin
     public const string TRANSLATION_PREFIX = "me.danimineiro.modsettings.";
     public const string MOD_NAME_TRANSLATION_KEY = TRANSLATION_PREFIX + "MOD_NAME";
 
-    public static int MOD_SETTINGS_TAB_INDEX { get; } = MOD_NAME.GetHashCode(StringComparison.Ordinal);
+    public static int MOD_SETTINGS_TAB_INDEX { get; } = MOD_NAME_TRANSLATION_KEY.GetHashCode(StringComparison.Ordinal);
 
     internal static List<Setting> ModSettingDefaults { get; } = [];
     internal static List<string> ModNameTranslationKeys { get; } = [MOD_NAME_TRANSLATION_KEY];
 
     [AllowNull] internal static ManualLogSource LogSource { get; private set; }
 
-    public Version? NewAvailableModVersion { get; set; }
+    public static Version? NewAvailableModVersion { get; set; } = new Version(1,1,1,1);
 
     public void Awake()
     {
@@ -80,7 +80,7 @@ public class ModSettingsPlugin : BaseUnityPlugin
         }));
     }
 
-    internal static int GetModIndexByHash(int hash) => ModNameTranslationKeys.Select(name => name.GetHashCode()).ToArray().IndexOf(hash);
+    internal static int GetModIndexByHash(int hash) => ModNameTranslationKeys.Select(name => name.GetHashCode(StringComparison.Ordinal)).ToArray().IndexOf(hash);
 
     #region Logging Shortcuts
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
