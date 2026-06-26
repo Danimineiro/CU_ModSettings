@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UI;
 
 namespace CU_ModSettings.UserInterface;
@@ -44,16 +45,28 @@ public static class UIHelper
         }
     }
 
-    public static GameObject CreateLabel(RectTransform parent, string content, float labelHeight = 32f, float verticalMargin = 3f)
+    public static GameObject CreateRectangle(RectTransform parent, float heightOffset, float verticalMargin = 0f, Color? rectangleColor = null)
     {
         GameObject spriteObject = CreateUIObject(nameof(spriteObject), parent);
 
         Image image = spriteObject.AddComponent<Image>();
         image.sprite = GetFromSettingsMenu(menu => menu.buttonClosed);
-        image.color = new Color(0.3f, 0.3f, 0.3f, 1f);
+        image.color = rectangleColor ?? new Color(0.3f, 0.3f, 0.3f, 1f);
         image.type = Image.Type.Sliced;
 
-        GameObject textObject = CreateUIObject(nameof(spriteObject), parent);
+        spriteObject.RectTransform.anchoredPosition = new Vector2(parent.anchoredPosition.x, -(heightOffset + verticalMargin));
+
+        return spriteObject;
+    }
+
+    public static GameObject CreateLabel(GameObject gameObj, string content, float heightOffset = 0f, float verticalMargin = 0f) =>
+        CreateLabel(gameObj.RectTransform, content, heightOffset, verticalMargin);
+
+    public static GameObject CreateLabel(RectTransform parent, string content, float heightOffset = 32f, float verticalMargin = 0f)
+    {
+        GameObject textObject = CreateUIObject(nameof(textObject), parent);
+        textObject.RectTransform.sizeDelta += new Vector2(-24, 0);
+
         ContentSizeFitter contentSizeFitter = textObject.AddComponent<ContentSizeFitter>();
         contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
@@ -61,12 +74,15 @@ public static class UIHelper
         textMesh.text = content;
         textMesh.ApplyFontSettings();
 
-        RectTransform textRectTransform = textObject.RectTransform;
-        textRectTransform.SetParent(spriteObject.transform, false);
-        textRectTransform.ZeroRectTransform();
-        textRectTransform.sizeDelta += new Vector2(-24, 0);
+        textObject.RectTransform.anchoredPosition = new Vector2(parent.anchoredPosition.x, -(heightOffset + verticalMargin));
 
-        spriteObject.RectTransform.anchoredPosition = new Vector2(textRectTransform.anchoredPosition.x, - (labelHeight + verticalMargin));
+        return textObject;
+    }
+
+    public static GameObject CreateLabelWithBorder(RectTransform parent, string content, float heightOffset = 32f, float verticalMargin = 0f, Color? borderColor = null)
+    {
+        GameObject spriteObject = CreateRectangle(parent, heightOffset, verticalMargin, borderColor);
+        GameObject textObject = CreateLabel(spriteObject, content);
 
         return textObject;
     }
