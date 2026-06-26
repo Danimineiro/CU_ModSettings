@@ -96,7 +96,7 @@ internal class SettingsMenuPatches
         Version current = Assembly.GetExecutingAssembly().GetName().Version;
         string modName = Locale.GetOther(ModSettingsPlugin.MOD_NAME_TRANSLATION_KEY);
 
-        if (ModSettingsPlugin.NewAvailableModVersion is Version version)
+        if (ModSettingsPlugin.TryGetNewVersion(out Version? version))
         {
             return string.Format(Locale.GetOther(ModSettingsLocale.MOD_VERSION_OUTDATED), modName, current, version);
         }

@@ -9,33 +9,28 @@ public class GitHubVersionChecker
 {
     public static string GetGithubLinkFor(string author, string repository) => $"https://api.github.com/repos/{author}/{repository}/releases/latest";
 
-    public static bool TryGetNewestVersionInformation(string author, string repository, [NotNullWhen(true)] out Version? version)
+    public static async Task<Version?> TryGetNewestVersionInformation(string author, string repository)
     {
         using HttpRequestMessage message = new(HttpMethod.Get, GetGithubLinkFor(author, repository));
         message.Headers.UserAgent.Add(new("ModSettings", Environment.Version.ToString()));
 
         using HttpClient client = new();
+        using HttpResponseMessage response = await client.SendAsync(message).ConfigureAwait(false);
 
-        HttpResponseMessage response = client.SendAsync(message).Result;
-
-        if (JsonConvert.DeserializeObject<GithubResponse>(response.Content.ReadAsStringAsync().Result) is not GithubResponse githubResponse) 
-        {
-            version = null;
-            return false;
-        }
+        string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        if (JsonConvert.DeserializeObject<GithubResponse>(content) is not GithubResponse githubResponse) return null;
 
         TimeSpan week = TimeSpan.FromDays(7);
         DateTime currentBuildCreationTime = File.GetCreationTimeUtc(Assembly.GetExecutingAssembly().Location);
 
-        bool gotVersion = githubResponse.TryGetVersion(out version);
+        bool gotVersion = githubResponse.TryGetVersion(out Version? version);
 
         if (!gotVersion)
         {
             ModSettingsPlugin.LogDebug("Couldn't parse version from Github.");
-            return false;
+            return null;
         }
 
-        // Current version is younger.
-        return Assembly.GetExecutingAssembly().GetName().Version < version;
+        return version;
     }
 }

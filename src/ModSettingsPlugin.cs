@@ -27,7 +27,8 @@ public class ModSettingsPlugin : BaseUnityPlugin
 
     [AllowNull] internal static ManualLogSource LogSource { get; private set; }
 
-    public static Version? NewAvailableModVersion { get; set; } = new Version(1,1,1,1);
+    public static Version? NewVersion { get; set; }
+    public static bool NewVersionAvailable => Assembly.GetExecutingAssembly().GetName().Version < (NewVersion ?? new Version(0, 0, 0, 0));
 
     public void Awake()
     {
@@ -37,21 +38,21 @@ public class ModSettingsPlugin : BaseUnityPlugin
 
         HarmonyPatcher.ApplyPatches(Logger);
 
-        Task.Run(() =>
+        Task.Run(async () =>
         {
             try
             {
                 Logger.LogInfo("Checking for new version information.");
-                if (!GitHubVersionChecker.TryGetNewestVersionInformation(AUTHOR, REPOSITORY, out Version? version))
+                if ((await GitHubVersionChecker.TryGetNewestVersionInformation(AUTHOR, REPOSITORY)) is not Version version || Assembly.GetExecutingAssembly().GetName().Version >= version)
                 {
                     Logger.LogMessage("You have the latest version installed.");
                     return; 
                 }
 
-                Logger.LogMessage($"Found new version: [{version}].\nYou can download the new version from {GitHubVersionChecker.GetGithubLinkFor(AUTHOR, REPOSITORY)}");
-                //Logger.LogMessage($"You can download the new version from {GitHubVersionChecker.GetGithubLinkFor(AUTHOR, REPOSITORY)}");
+                Logger.LogMessage($"Found new version: [{version}].");
+                Logger.LogMessage($"You can download the new version from {GitHubVersionChecker.GetGithubLinkFor(AUTHOR, REPOSITORY)}");
 
-                NewAvailableModVersion = version;
+                NewVersion = version;
             } 
             catch (Exception ex)
             {
@@ -81,6 +82,24 @@ public class ModSettingsPlugin : BaseUnityPlugin
     }
 
     internal static int GetModIndexByHash(int hash) => ModNameTranslationKeys.Select(name => name.GetHashCode(StringComparison.Ordinal)).ToArray().IndexOf(hash);
+
+    public static bool TryGetNewVersion([NotNullWhen(true)]out Version? version)
+    {
+        if (!NewVersionAvailable)
+        {
+            version = null;
+            return false;
+        }
+
+        if (NewVersion is Version newVersion)
+        {
+            version = newVersion;
+            return true;
+        }
+
+        version = null;
+        return false;
+    }
 
     #region Logging Shortcuts
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
