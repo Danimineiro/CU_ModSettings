@@ -5,12 +5,13 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
 
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 
 		<OutputPath>F:\SteamLibrary\steamapps\common\Casualties Unknown Demo\BepInEx\plugins\ModSettings</OutputPath>
-		<Version>1.0.1</Version>
+		<Version>1.0.1.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
