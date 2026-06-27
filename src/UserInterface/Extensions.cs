@@ -5,6 +5,11 @@ namespace CU_ModSettings.UserInterface;
 
 public static class Extensions
 {
+    extension(Transform transform)
+    {
+        public RectTransform RectTransform => transform.GetComponent<RectTransform>();
+    }
+
     extension(GameObject gameObject)
     {
         public string Text
