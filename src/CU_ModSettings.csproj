@@ -16,5 +16,10 @@
 
 	<ItemGroup>
 		<None Remove=".gitattributes" />
+		<None Remove="Textures\Octicons-mark-github.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Textures\Octicons-mark-github.png" />
 	</ItemGroup>
 </Project>
