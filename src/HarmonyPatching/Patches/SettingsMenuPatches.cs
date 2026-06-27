@@ -1,9 +1,12 @@
 ﻿using CU_ModSettings.UserInterface;
 using HarmonyLib;
+using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.Reflection;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using static Setting;
 
@@ -27,6 +30,38 @@ internal class SettingsMenuPatches
 
         DrawDropDown(index, out float dropDownHeight);
         DrawModSettingsInfo(index, dropDownHeight);
+        DrawGithubButton(index, dropDownHeight);
+    }
+
+    private static void DrawGithubButton(int index, float dropDownHeight)
+    {
+        if (ModSettingsPlugin.GetModIndexByHash(index) is not 0) return;
+
+        GameObject githubRect = UIHelper.CreateUIObject(nameof(githubRect), SettingsMenu.instance.content, dropDownHeight * 2);
+        UIHelper.CreateRectangle(githubRect);
+
+        UIHelper.SplitRectTransformHorizontally(githubRect, 0.84f, out GameObject leftGithubContainer, out GameObject rightGithubContainer);
+
+        string modName = Locale.GetOther(ModSettingsPlugin.MOD_NAME_TRANSLATION_KEY);
+        string github = string.Format(Locale.GetOther(ModSettingsLocale.GITHUB));
+        string content = string.Format(Locale.GetOther(ModSettingsLocale.CHECKOUT_GITHUB), modName, github);
+
+        UIHelper.CreateLabel(leftGithubContainer, content);
+
+        rightGithubContainer.RectTransform.sizeDelta += new Vector2(-20f, -24f);
+        Sprite sprite = UIHelper.GetTexture("CU_ModSettings.Textures.Octicons-mark-github.png").ConvertToSprite();
+        UIHelper.CreateButtonWithImage(rightGithubContainer, github, sprite, 32f, OpenGithubLink, TextAlignmentOptions.Center, buttonColor: Color.white);
+
+        SpawnedObjects.Add(githubRect);
+    }
+
+    private static void OpenGithubLink()
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = GitHubVersionChecker.GetGithubLinkFor("danimineiro", "CU_ModSettings"),
+            UseShellExecute = true
+        });
     }
 
     internal static void OpenMenuPatch()
@@ -81,13 +116,13 @@ internal class SettingsMenuPatches
     }
     #endregion Patches
 
-    private static void DrawModSettingsInfo(int index, float dropDownHeight)
+    private static void DrawModSettingsInfo(int index, float height)
     {
         if (ModSettingsPlugin.GetModIndexByHash(index) is not 0) return;
 
         string content = GetVersionText();
-        GameObject label = UIHelper.CreateLabelWithBorder(SettingsMenu.instance.content, content, dropDownHeight);
-
+        GameObject label = UIHelper.CreateLabelWithBorder(SettingsMenu.instance.content, content, heightOffset: height);
+        
         SpawnedObjects.Add(label);
     }
 

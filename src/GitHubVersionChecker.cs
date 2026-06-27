@@ -7,11 +7,13 @@ namespace CU_ModSettings;
 
 public class GitHubVersionChecker
 {
-    public static string GetGithubLinkFor(string author, string repository) => $"https://api.github.com/repos/{author}/{repository}/releases/latest";
+    public static string GetGithubLinkFor(string author, string repository) => $"https://github.com/{author}/{repository}/releases/latest";
+
+    public static string GetGithubAPIReleasesLinkFor(string author, string repository) => $"https://api.github.com/repos/{author}/{repository}/releases/latest";
 
     public static async Task<Version?> TryGetNewestVersionInformation(string author, string repository)
     {
-        using HttpRequestMessage message = new(HttpMethod.Get, GetGithubLinkFor(author, repository));
+        using HttpRequestMessage message = new(HttpMethod.Get, GetGithubAPIReleasesLinkFor(author, repository));
         message.Headers.UserAgent.Add(new("ModSettings", Environment.Version.ToString()));
 
         using HttpClient client = new();
