@@ -1,8 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using CU_ModSettings.HarmonyPatching;
-using CUCoreLib.Data;
-using CUCoreLib.Registries;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
