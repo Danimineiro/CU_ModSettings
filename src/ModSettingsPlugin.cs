@@ -9,7 +9,7 @@ using static Setting;
 
 namespace CU_ModSettings;
 
-[BepInPlugin("me.danimineiro.modsettings", MOD_NAME, "1.0.2.0")]
+[BepInPlugin("me.danimineiro.modsettings", MOD_NAME, "1.0.2.1")]
 public class ModSettingsPlugin : BaseUnityPlugin
 {
     public const string AUTHOR = "danimineiro";
