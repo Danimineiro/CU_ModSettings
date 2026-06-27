@@ -1,37 +1,14 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UI;
 
 namespace CU_ModSettings.UserInterface;
 
 public static class UIHelper
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void ZeroRectTransform(this RectTransform transform)
-    {
-        transform.anchorMin = Vector2.zero;
-        transform.anchorMax = Vector2.one;
-        transform.sizeDelta = Vector2.zero;
-    }
-
-    public static GameObject CreateUIObject(string name, GameObject parent) => CreateUIObject(name, parent.transform);
-
-    public static GameObject CreateUIObject(string name, Transform parent)
-    {
-        GameObject gameObject = new(name);
-        gameObject.AddComponent<RectTransform>();
-        gameObject.transform.SetParent(parent, false);
-        gameObject.RectTransform.ZeroRectTransform();
-
-        return gameObject;
-    }
-
     private static TVar GetFromSettingsMenu<TVar>(Func<SettingsMenu, TVar> variableGetter)
     {
-
         bool instanceExists = SettingsMenu.instance != null;
         SettingsMenu menu = instanceExists ? SettingsMenu.instance! : Resources.Load<SettingsMenu>("Special/SettingsMenu");
 
@@ -45,7 +22,34 @@ public static class UIHelper
         }
     }
 
-    public static GameObject CreateRectangle(RectTransform parent, float heightOffset, float verticalMargin = 0f, Color? rectangleColor = null)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void ZeroRectTransform(this RectTransform transform)
+    {
+        transform.anchorMin = Vector2.zero;
+        transform.anchorMax = Vector2.one;
+        transform.sizeDelta = Vector2.zero;
+    }
+
+    public static GameObject CreateUIObject(string name, GameObject parent) => CreateUIObject(name, parent.transform);
+
+    public static GameObject CreateUIObject(string name, Transform parent, float heightOffset = 0f, float verticalMargin = 0f)
+    {
+        GameObject gameObject = new(name);
+        gameObject.AddComponent<RectTransform>();
+        gameObject.transform.SetParent(parent, false);
+
+        RectTransform rectTransform = gameObject.RectTransform;
+        rectTransform.ZeroRectTransform();
+
+        rectTransform.anchoredPosition = new(parent.RectTransform.anchoredPosition.x, -(heightOffset + verticalMargin));
+
+        return gameObject;
+    }
+
+    public static GameObject CreateRectangle(GameObject parent, float heightOffset = 0f, float verticalMargin = 0f, Color? rectangleColor = null) =>
+        CreateRectangle(parent.RectTransform, heightOffset, verticalMargin, rectangleColor);
+
+    public static GameObject CreateRectangle(RectTransform parent, float heightOffset = 0f, float verticalMargin = 0f, Color? rectangleColor = null)
     {
         GameObject spriteObject = CreateUIObject(nameof(spriteObject), parent);
 
@@ -79,11 +83,35 @@ public static class UIHelper
         return textObject;
     }
 
+    public static GameObject CreateLabelWithBorder(GameObject parent, string content, float heightOffset = 32f, float verticalMargin = 0f, Color? borderColor = null) =>
+        CreateLabelWithBorder(parent.RectTransform, content, heightOffset, verticalMargin, borderColor);
+
     public static GameObject CreateLabelWithBorder(RectTransform parent, string content, float heightOffset = 32f, float verticalMargin = 0f, Color? borderColor = null)
     {
         GameObject spriteObject = CreateRectangle(parent, heightOffset, verticalMargin, borderColor);
-        GameObject textObject = CreateLabel(spriteObject, content);
+        CreateLabel(spriteObject, content);
 
-        return textObject;
+        return spriteObject;
+    }
+
+    public static void SplitRectTransformHorizontally(GameObject parent, float leftSplitPercentage, out GameObject leftObject, out GameObject rightObject) =>
+        SpitRectTransformHorizontally(parent.RectTransform, leftSplitPercentage, out leftObject, out rightObject);
+
+    public static void SpitRectTransformHorizontally(RectTransform parent, float leftSplitPercentage, out GameObject leftObject, out GameObject rightObject)
+    {
+        leftObject = CreateUIObject(nameof(leftObject), parent);
+        rightObject = CreateUIObject(nameof(leftObject), parent);
+
+        RectTransform leftRectTransform = leftObject.RectTransform;
+        RectTransform rightRectTransform = rightObject.RectTransform;
+
+        float leftSideWidth = -parent.rect.width + (parent.rect.width * leftSplitPercentage);
+        float rightSideWidth = -parent.rect.width + (parent.rect.width * (1 - leftSplitPercentage));
+
+        leftRectTransform.sizeDelta = new(leftSideWidth, 0f);
+        rightRectTransform.sizeDelta = new(rightSideWidth, 0f);
+
+        leftRectTransform.anchoredPosition = new(leftSideWidth / 4f, 0f);
+        rightRectTransform.anchoredPosition = new(-rightSideWidth / 4f, 0f);
     }
 }
